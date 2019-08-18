@@ -5,8 +5,9 @@ import Home from './views/Home.vue';
 Vue.use(Router);
 
 const routes = [
+  { path: '/', redirect: '/search' },
   {
-    path: '/',
+    path: '/search',
     name: 'home',
     component: Home,
   },

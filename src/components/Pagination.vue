@@ -1,45 +1,54 @@
 <template>
   <nav class="pagination">
     <button
-      @click="turnPage(currentPage, 'previous')"
+      @click="turnPage(currentPage, -1)"
       :disabled="currentPage <= 1"
-      class="btn"
-    >Previous</button>
+      class="btn">Previous</button
+    >
     <span>{{currentPage}} of {{totalPages}}</span>
     <button
-      @click="turnPage(currentPage, 'next')"
-      :disabled="!hasNextPage"
-      class="btn"
-    >Next</button>
+      @click="turnPage(currentPage, 1)"
+      :disabled="isLastPage"
+      class="btn">Next</button
+    >
   </nav>
 </template>
 
 <script>
-const PREVIOUS = 'previous';
-const NEXT = 'next';
-
 export default {
   name: 'Pagination',
   computed: {
     currentPage() {
-      return this.$store.state.currentPage;
+      return Number(this.$route.query.page) || 1;
     },
     totalPages() {
       return this.$store.getters.totalPages;
     },
-    hasNextPage() {
-      return this.$store.getters.hasNextPage;
+    isLastPage() {
+      return this.currentPage === this.totalPages;
     },
   },
   methods: {
     turnPage(pageNumber, direction) {
-      switch (direction) {
-        case PREVIOUS:
-          this.$store.dispatch('turnPage', (pageNumber -= 1));
-          break;
-        case NEXT:
-          this.$store.dispatch('turnPage', (pageNumber += 1));
-          break;
+      const page = Number(pageNumber) + direction;
+
+      const query = {
+        ...this.$route.query,
+      };
+
+      query.page = page;
+      if (this.$route.query.s) {
+        query.s = this.$route.query.s;
+      }
+
+      if (this.$route.query.y) {
+        query.y = this.$route.query.y;
+      }
+
+      if (this.$route.query.page !== page) {
+        this.$router.push({
+          query,
+        });
       }
     },
   },

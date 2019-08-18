@@ -9,7 +9,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="movie in results" :key="movie.imdbID">
+        <tr v-for="(movie, index) in results" :key="index">
+          <!-- sometimes api returns duplicated imdbID so errors occur.
+           that's why i used index as a key-->
           <td>{{movie.Title}}</td>
           <td>{{movie.Year}}</td>
           <td>{{movie.Type}}</td>

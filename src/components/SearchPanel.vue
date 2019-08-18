@@ -2,12 +2,7 @@
   <div class="search-panel">
     <h1 class="text-center">Search movies</h1>
     <form @submit.prevent="onSubmit(title, year)" class="search-form">
-      <input 
-        v-model="title"
-        id="title" class="form-control"
-        type="text"
-        placeholder="Title"
-      />
+      <input v-model="title" id="title" class="form-control" type="text" placeholder="Title" />
       <input
         v-model.number="year"
         id="year"
@@ -29,15 +24,42 @@ export default {
       year: null,
     };
   },
+  watch: {
+    '$route.query': 'runSearch',
+  },
+  created() {
+    if (this.$route.query.s) {
+      this.runSearch();
+      this.title = this.$route.query.s;
+      this.year = this.$route.query.y;
+    }
+  },
+
   methods: {
-    onSubmit(title, year) {
+    runSearch() {
       const criteria = {
-        title,
-        year,
+        title: this.$route.query.s,
+        year: this.$route.query.y,
+        page: this.$route.query.page,
       };
+
+      this.$store.dispatch('getMovies', criteria);
+    },
+    onSubmit(title, year) {
+      const query = {};
+
       if (title) {
-        this.$store.dispatch('resetPages');
-        this.$store.dispatch('getMovies', criteria);
+        query.s = title;
+      }
+
+      if (year) {
+        query.y = year;
+      }
+
+      if (this.$route.query.y !== query.y || this.$route.query.s !== query.s) {
+        this.$router.push({
+          query,
+        });
       }
     },
   },
