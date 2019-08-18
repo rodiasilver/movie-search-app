@@ -9,9 +9,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(movie, index) in results" :key="index">
+        <tr @click="goToMovie(movie.imdbID)" v-for="(movie, index) in results" :key="index">
           <!-- sometimes api returns duplicated imdbID so errors occur.
-           that's why i used index as a key-->
+          that's why i used index as a key-->
           <td>{{movie.Title}}</td>
           <td>{{movie.Year}}</td>
           <td>{{movie.Type}}</td>
@@ -27,6 +27,16 @@ export default {
   computed: {
     results() {
       return this.$store.state.results;
+    },
+  },
+  methods: {
+    goToMovie(imdbID) {
+      this.$router.push({
+        name: 'movie',
+        params: {
+          id: imdbID,
+        },
+      });
     },
   },
 };
