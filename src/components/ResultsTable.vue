@@ -53,6 +53,17 @@ export default {
         text-decoration: underline;
       }
     }
+
+    td {
+      width: 70%;
+
+      &:nth-child(2) {
+        width: 15%;
+      }
+      &:last-child {
+        width: 15%;
+      }
+    }
   }
 }
 </style>

@@ -79,7 +79,6 @@ export default {
   methods: {
     async getMovieDetails(id) {
       this.movieDetails = await moviesApi.getMovieDetails(id);
-      console.log(this.movieDetails);
     },
   },
   created() {

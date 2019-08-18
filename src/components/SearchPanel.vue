@@ -8,6 +8,8 @@
         id="year"
         class="form-control"
         type="number"
+        min="1888"
+        :max="`${new Date().getFullYear() + 5}`"
         placeholder="Year(optional)"
       />
       <button class="btn btn-primary" type="submit">Search</button>
@@ -15,6 +17,7 @@
     <p v-if="hasNoMovies" class="no-movie-msg text-center">
       No results found for
       <span>"{{title}}"</span>
+      <span v-if="year !== null">&nbsp;in {{year}}.</span>
     </p>
   </div>
 </template>
@@ -30,7 +33,6 @@ export default {
   },
   computed: {
     hasNoMovies() {
-      console.log(this.$store.getters.hasNoMovies);
       return this.$store.getters.hasNoMovies;
     },
   },
