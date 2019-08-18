@@ -12,6 +12,10 @@
       />
       <button class="btn btn-primary" type="submit">Search</button>
     </form>
+    <p v-if="hasNoMovies" class="no-movie-msg text-center">
+      No results found for
+      <span>"{{title}}"</span>
+    </p>
   </div>
 </template>
 
@@ -24,6 +28,12 @@ export default {
       year: null,
     };
   },
+  computed: {
+    hasNoMovies() {
+      console.log(this.$store.getters.hasNoMovies);
+      return this.$store.getters.hasNoMovies;
+    },
+  },
   watch: {
     '$route.query': 'runSearch',
   },
@@ -34,7 +44,6 @@ export default {
       this.year = this.$route.query.y;
     }
   },
-
   methods: {
     runSearch() {
       const criteria = {
@@ -74,11 +83,22 @@ export default {
     .form-control {
       margin-bottom: 1%;
     }
+
+    .btn {
+      width: 20%;
+      align-self: flex-end;
+    }
   }
 
-  .btn {
-    width: 20%;
-    align-self: flex-end;
+  .no-movie-msg {
+    color: #202020;
+    font-size: 1.5rem;
+
+    span {
+      color: #333;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
   }
 }
 </style>
