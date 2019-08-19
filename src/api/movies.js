@@ -6,7 +6,6 @@ const MOVIE_YEAR = 'y';
 const PAGE = 'page';
 const ID = 'i';
 
-
 function getMovies(criteria) {
   return axios
     .get(URL, {

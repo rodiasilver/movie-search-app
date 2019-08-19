@@ -46,31 +46,31 @@
 </template>
 
 <script>
-import arrow from "@/assets/media/images/arrow.png";
+import arrow from '@/assets/media/images/arrow.png';
 
-const DESC = "desc";
-const ASC = "asc";
-const TITLE = "Title";
-const YEAR = "Year";
-const TYPE = "Type";
+const TITLE = 'Title';
+const YEAR = 'Year';
+const TYPE = 'Type';
+const ASC = 'asc';
+const DESC = 'desc';
 
 export default {
-  name: "ResultsTable",
+  name: 'ResultsTable',
   data() {
     return {
       columns: {
         Title: {
-          order: ASC
+          order: ASC,
         },
         Year: {
-          order: ASC
+          order: ASC,
         },
         Type: {
-          order: ASC
-        }
+          order: ASC,
+        },
       },
       criteria: null,
-      arrow
+      arrow,
     };
   },
   computed: {
@@ -80,33 +80,34 @@ export default {
     sortedResults() {
       let order = ASC;
       if (this.criteria) {
+        // eslint-disable-next-line prefer-destructuring
         order = this.columns[this.criteria].order;
       }
       return this.lodash.orderBy(this.results, this.criteria, order);
-    }
+    },
   },
   methods: {
     goToMovie(imdbID) {
       this.$router.push({
-        name: "movie",
+        name: 'movie',
         params: {
-          id: imdbID
-        }
+          id: imdbID,
+        },
       });
     },
     searchBy(criteria) {
       switch (criteria) {
         case TITLE:
           this.criteria = TITLE;
-          this.columns.Title.order = this.changeOrder(TITLE);
+          this.columns.Title.order = this.setOrder(TITLE);
           break;
         case YEAR:
           this.criteria = YEAR;
-          this.columns.Year.order = this.changeOrder(YEAR);
+          this.columns.Year.order = this.setOrder(YEAR);
           break;
         case TYPE:
           this.criteria = TYPE;
-          this.columns.Type.order = this.changeOrder(TYPE);
+          this.columns.Type.order = this.setOrder(TYPE);
           break;
         default:
           this.criteria = TITLE;
@@ -114,18 +115,19 @@ export default {
           break;
       }
     },
-    changeOrder(criteria) {
+    setOrder(criteria) {
       this.resetOrders(criteria);
       return this.columns[criteria].order === ASC ? DESC : ASC;
     },
     resetOrders(criteria) {
+      // eslint-disable-next-line no-restricted-syntax
       for (const el in this.columns) {
         if (el !== criteria) {
           this.columns[el].order = ASC;
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

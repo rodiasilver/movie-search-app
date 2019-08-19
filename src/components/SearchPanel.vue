@@ -15,24 +15,25 @@
       />
       <button class="btn btn-primary" type="submit">Search</button>
     </form>
-    <p v-if="hasNoMovies && title" class="no-movie-msg text-center">
-      No results found for
-      <span>"{{title}}"</span>
-      <span v-if="year">&nbsp;in {{year}}.</span>
+    <p v-if="hasNoMovies" class="no-movie-msg text-center">
+      <span>"No results found for {{notFoundTitle}}"</span>
+      <span v-if="notFoundYear">&nbsp;in {{notFoundYear}}</span>
     </p>
   </div>
 </template>
 
 <script>
-import progress from "@/mixins/progress";
+import progress from '@/mixins/progress';
 
 export default {
-  name: "SearchPanel",
+  name: 'SearchPanel',
   mixins: [progress],
   data() {
     return {
       title: null,
-      year: null
+      year: null,
+      notFoundTitle: null,
+      notFoundYear: null,
     };
   },
   computed: {
@@ -41,10 +42,10 @@ export default {
     },
     isLoading() {
       return this.$store.state.isLoading;
-    }
+    },
   },
   watch: {
-    "$route.query": "runSearch"
+    '$route.query': 'runSearch',
   },
   created() {
     if (this.$route.query.s) {
@@ -52,8 +53,8 @@ export default {
       this.title = this.$route.query.s;
       this.year = this.$route.query.y;
     }
-    this.$store.subscribe(mutation => {
-      if (mutation.type === "SET_LOADING_STATUS") {
+    this.$store.subscribe((mutation) => {
+      if (mutation.type === 'SET_LOADING_STATUS') {
         if (this.isLoading) {
           this.startProgress();
         } else this.finishProgress();
@@ -65,10 +66,10 @@ export default {
       const criteria = {
         title: this.$route.query.s,
         year: this.$route.query.y,
-        page: this.$route.query.page
+        page: this.$route.query.page,
       };
 
-      this.$store.dispatch("getMovies", criteria);
+      this.$store.dispatch('getMovies', criteria);
     },
     onSubmit(title, year) {
       const query = {};
@@ -83,11 +84,23 @@ export default {
 
       if (this.$route.query.y !== query.y || this.$route.query.s !== query.s) {
         this.$router.push({
-          query
+          query,
         });
       }
-    }
-  }
+      setTimeout(() => {
+        if (this.hasNoMovies) {
+          this.setNotFoundMessage(this.title, this.year);
+        } else {
+          this.notFoundTitle = '';
+          this.notFoundYear = '';
+        }
+      }, 500);
+    },
+    setNotFoundMessage(title, year) {
+      this.notFoundTitle = title;
+      this.notFoundYear = year;
+    },
+  },
 };
 </script>
 
