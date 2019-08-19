@@ -14,10 +14,10 @@
       />
       <button class="btn btn-primary" type="submit">Search</button>
     </form>
-    <p v-if="hasNoMovies" class="no-movie-msg text-center">
+    <p v-if="hasNoMovies && title" class="no-movie-msg text-center">
       No results found for
       <span>"{{title}}"</span>
-      <span v-if="year !== null">&nbsp;in {{year}}.</span>
+      <span v-if="year">&nbsp;in {{year}}.</span>
     </p>
   </div>
 </template>

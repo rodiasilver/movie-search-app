@@ -1,5 +1,6 @@
 <template>
   <div class="results-table">
+    <vue-progress-bar></vue-progress-bar>
     <table class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
       <thead>
         <tr>
@@ -22,12 +23,27 @@
 </template>
 
 <script>
+import progress from '@/mixins/progress';
+
 export default {
   name: 'ResultsTable',
+  mixins: [progress],
   computed: {
     results() {
       return this.$store.state.results;
     },
+    isLoading() {
+      return this.$store.state.isLoading;
+    },
+  },
+  created() {
+    this.$store.subscribe((mutation) => {
+      if (mutation.type === 'SET_LOADING_STATUS') {
+        if (this.isLoading) {
+          this.startProgress();
+        } else this.finishProgress();
+      }
+    });
   },
   methods: {
     goToMovie(imdbID) {

@@ -1,6 +1,7 @@
 <template>
   <div class="movie-details">
-    <div class="container">
+    <vue-progress-bar></vue-progress-bar>
+    <div v-if="!isLoading" class="container">
       <div class="row pt-5">
         <div class="col-lg-4 col-md-6 col-sm-7 col-xs-6">
           <img
@@ -67,23 +68,35 @@
 <script>
 import moviesApi from '@/api/movies';
 import defaultPoster from '@/assets/media/images/default_poster.jpg';
+import progress from '@/mixins/progress';
 
 export default {
   name: 'MovieDetail',
+  mixins: [progress],
   data() {
     return {
       movieDetails: {},
       defaultPoster,
+      isLoading: false,
     };
   },
-  methods: {
-    async getMovieDetails(id) {
-      this.movieDetails = await moviesApi.getMovieDetails(id);
+  watch: {
+    isLoading(status) {
+      if (status) {
+        this.startProgress();
+      } else this.finishProgress();
     },
   },
   created() {
     const { id } = this.$route.params;
     this.getMovieDetails(id);
+  },
+  methods: {
+    async getMovieDetails(id) {
+      this.isLoading = true;
+      this.movieDetails = await moviesApi.getMovieDetails(id);
+      this.isLoading = false;
+    },
   },
 };
 </script>

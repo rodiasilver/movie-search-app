@@ -9,6 +9,7 @@ export default new Vuex.Store({
     results: [],
     totalResults: null,
     response: null,
+    isLoading: false,
   },
   getters: {
     totalPages(state) {
@@ -24,11 +25,16 @@ export default new Vuex.Store({
       state.totalResults = results.totalResults;
       state.response = results.Response;
     },
+    SET_LOADING_STATUS(state, status) {
+      state.isLoading = status;
+    },
   },
   actions: {
     async getMovies({ commit }, criteria) {
+      commit('SET_LOADING_STATUS', true);
       const results = await moviesApi.getMovies(criteria);
       commit('SET_MOVIES', results);
+      commit('SET_LOADING_STATUS', false);
     },
   },
 });
