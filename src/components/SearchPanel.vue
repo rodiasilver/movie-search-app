@@ -1,5 +1,6 @@
 <template>
   <div class="search-panel">
+    <vue-progress-bar></vue-progress-bar>
     <h1 class="text-center">Search movies</h1>
     <form @submit.prevent="onSubmit(title, year)" class="search-form">
       <input v-model="title" id="title" class="form-control" type="text" placeholder="Title" />
@@ -23,21 +24,27 @@
 </template>
 
 <script>
+import progress from "@/mixins/progress";
+
 export default {
-  name: 'SearchPanel',
+  name: "SearchPanel",
+  mixins: [progress],
   data() {
     return {
       title: null,
-      year: null,
+      year: null
     };
   },
   computed: {
     hasNoMovies() {
       return this.$store.getters.hasNoMovies;
     },
+    isLoading() {
+      return this.$store.state.isLoading;
+    }
   },
   watch: {
-    '$route.query': 'runSearch',
+    "$route.query": "runSearch"
   },
   created() {
     if (this.$route.query.s) {
@@ -45,16 +52,23 @@ export default {
       this.title = this.$route.query.s;
       this.year = this.$route.query.y;
     }
+    this.$store.subscribe(mutation => {
+      if (mutation.type === "SET_LOADING_STATUS") {
+        if (this.isLoading) {
+          this.startProgress();
+        } else this.finishProgress();
+      }
+    });
   },
   methods: {
     runSearch() {
       const criteria = {
         title: this.$route.query.s,
         year: this.$route.query.y,
-        page: this.$route.query.page,
+        page: this.$route.query.page
       };
 
-      this.$store.dispatch('getMovies', criteria);
+      this.$store.dispatch("getMovies", criteria);
     },
     onSubmit(title, year) {
       const query = {};
@@ -69,11 +83,11 @@ export default {
 
       if (this.$route.query.y !== query.y || this.$route.query.s !== query.s) {
         this.$router.push({
-          query,
+          query
         });
       }
-    },
-  },
+    }
+  }
 };
 </script>
 

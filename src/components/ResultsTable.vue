@@ -1,16 +1,39 @@
 <template>
   <div class="results-table">
-    <vue-progress-bar></vue-progress-bar>
     <table class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
       <thead>
         <tr>
-          <th class="th-sm">Title</th>
-          <th class="th-sm">Year</th>
-          <th class="th-sm">Type</th>
+          <th @click="searchBy('Title')" class="th th-sm">
+            <span>Title</span>
+            <img
+              class="arrow"
+              :class="columns.Title.order === 'asc' ? 'asc' : 'desc'"
+              :src="arrow"
+              alt="arrow"
+            />
+          </th>
+          <th @click="searchBy('Year')" class="th th-sm">
+            <span>Year</span>
+            <img
+              class="arrow"
+              :class="columns.Year.order === 'asc' ? 'asc' : 'desc'"
+              :src="arrow"
+              alt="arrow"
+            />
+          </th>
+          <th @click="searchBy('Type')" class="th th-sm">
+            <span>Type</span>
+            <img
+              class="arrow"
+              :class="columns.Type.order === 'asc' ? 'asc' : 'desc'"
+              :src="arrow"
+              alt="arrow"
+            />
+          </th>
         </tr>
       </thead>
       <tbody>
-        <tr @click="goToMovie(movie.imdbID)" v-for="(movie, index) in results" :key="index">
+        <tr @click="goToMovie(movie.imdbID)" v-for="(movie, index) in sortedResults" :key="index">
           <!-- sometimes api returns duplicated imdbID so errors occur.
           that's why i used index as a key-->
           <td>{{movie.Title}}</td>
@@ -23,44 +46,109 @@
 </template>
 
 <script>
-import progress from '@/mixins/progress';
+import arrow from "@/assets/media/images/arrow.png";
+
+const DESC = "desc";
+const ASC = "asc";
+const TITLE = "Title";
+const YEAR = "Year";
+const TYPE = "Type";
 
 export default {
-  name: 'ResultsTable',
-  mixins: [progress],
+  name: "ResultsTable",
+  data() {
+    return {
+      columns: {
+        Title: {
+          order: ASC
+        },
+        Year: {
+          order: ASC
+        },
+        Type: {
+          order: ASC
+        }
+      },
+      criteria: null,
+      arrow
+    };
+  },
   computed: {
     results() {
       return this.$store.state.results;
     },
-    isLoading() {
-      return this.$store.state.isLoading;
-    },
-  },
-  created() {
-    this.$store.subscribe((mutation) => {
-      if (mutation.type === 'SET_LOADING_STATUS') {
-        if (this.isLoading) {
-          this.startProgress();
-        } else this.finishProgress();
+    sortedResults() {
+      let order = ASC;
+      if (this.criteria) {
+        order = this.columns[this.criteria].order;
       }
-    });
+      return this.lodash.orderBy(this.results, this.criteria, order);
+    }
   },
   methods: {
     goToMovie(imdbID) {
       this.$router.push({
-        name: 'movie',
+        name: "movie",
         params: {
-          id: imdbID,
-        },
+          id: imdbID
+        }
       });
     },
-  },
+    searchBy(criteria) {
+      switch (criteria) {
+        case TITLE:
+          this.criteria = TITLE;
+          this.columns.Title.order = this.changeOrder(TITLE);
+          break;
+        case YEAR:
+          this.criteria = YEAR;
+          this.columns.Year.order = this.changeOrder(YEAR);
+          break;
+        case TYPE:
+          this.criteria = TYPE;
+          this.columns.Type.order = this.changeOrder(TYPE);
+          break;
+        default:
+          this.criteria = TITLE;
+          this.columns.Title.order = ASC;
+          break;
+      }
+    },
+    changeOrder(criteria) {
+      this.resetOrders(criteria);
+      return this.columns[criteria].order === ASC ? DESC : ASC;
+    },
+    resetOrders(criteria) {
+      for (const el in this.columns) {
+        if (el !== criteria) {
+          this.columns[el].order = ASC;
+        }
+      }
+    }
+  }
 };
 </script>
 
 <style lang="scss" scoped>
 .results-table {
+  thead tr {
+    height: 35px;
+
+    th {
+      @include flex-space-between;
+
+      .arrow {
+        width: 15px;
+        height: 11px;
+
+        &.asc {
+          transform: rotate(180deg);
+        }
+      }
+    }
+  }
   tr {
+    display: flex;
     height: 35px;
     cursor: pointer;
 
@@ -70,7 +158,8 @@ export default {
       }
     }
 
-    td {
+    td,
+    th {
       width: 70%;
 
       &:nth-child(2) {
