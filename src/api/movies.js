@@ -1,18 +1,13 @@
 import axios from 'axios';
-
-const URL = 'http://www.omdbapi.com/?apikey=e7828b6';
-const MOVIE_TITLE = 's';
-const MOVIE_YEAR = 'y';
-const PAGE = 'page';
-const ID = 'i';
+import { SEARCH_PARAMS } from '@/config/constants';
 
 function getMovies(criteria) {
   return axios
-    .get(URL, {
+    .get(SEARCH_PARAMS.URL, {
       params: {
-        [MOVIE_TITLE]: criteria.title,
-        [MOVIE_YEAR]: criteria.year,
-        [PAGE]: criteria.page,
+        [SEARCH_PARAMS.MOVIE_TITLE]: criteria.title,
+        [SEARCH_PARAMS.MOVIE_YEAR]: criteria.year,
+        [SEARCH_PARAMS.PAGE]: criteria.page,
       },
     })
     .then(response => response.data)
@@ -23,9 +18,9 @@ function getMovies(criteria) {
 
 function getMovieDetails(id) {
   return axios
-    .get(URL, {
+    .get(SEARCH_PARAMS.URL, {
       params: {
-        [ID]: id,
+        [SEARCH_PARAMS.ID]: id,
       },
     })
     .then(response => response.data)

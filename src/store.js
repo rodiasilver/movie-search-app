@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import moviesApi from '@/api/movies';
+import { PAGES_PER_REQUEST, FAILED_RESPONSE } from '@/config/constants';
 
 Vue.use(Vuex);
 
@@ -13,10 +14,10 @@ export default new Vuex.Store({
   },
   getters: {
     totalPages(state) {
-      return Math.ceil(state.totalResults / 10);
+      return Math.ceil(state.totalResults / PAGES_PER_REQUEST);
     },
     hasNoMovies(state) {
-      return state.response === 'False';
+      return state.response === FAILED_RESPONSE;
     },
   },
   mutations: {

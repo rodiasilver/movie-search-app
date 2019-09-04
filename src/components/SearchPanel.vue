@@ -9,8 +9,8 @@
         id="year"
         class="form-control"
         type="number"
-        min="1888"
-        :max="`${new Date().getFullYear() + 5}`"
+        :min="MIN_MOVIE_YEAR"
+        :max="MAX_MOVIE_YEAR"
         placeholder="Year(optional)"
       />
       <button class="btn btn-primary" type="submit">Search</button>
@@ -24,6 +24,7 @@
 
 <script>
 import progress from '@/mixins/progress';
+import { MIN_MOVIE_YEAR, MAX_MOVIE_YEAR } from '@/config/constants';
 
 export default {
   name: 'SearchPanel',
@@ -34,6 +35,8 @@ export default {
       year: null,
       notFoundTitle: null,
       notFoundYear: null,
+      MIN_MOVIE_YEAR,
+      MAX_MOVIE_YEAR,
     };
   },
   computed: {

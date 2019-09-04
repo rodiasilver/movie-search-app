@@ -1,16 +1,8 @@
 <template>
   <nav class="pagination">
-    <button
-      @click="turnPage(currentPage, -1)"
-      :disabled="currentPage <= 1"
-      class="btn">Previous</button
-    >
+    <button @click="turnPage(currentPage, -1)" :disabled="isFirstPage" class="btn">Previous</button>
     <span>{{currentPage}} of {{totalPages}}</span>
-    <button
-      @click="turnPage(currentPage, 1)"
-      :disabled="isLastPage"
-      class="btn">Next</button
-    >
+    <button @click="turnPage(currentPage, 1)" :disabled="isLastPage" class="btn">Next</button>
   </nav>
 </template>
 
@@ -23,6 +15,9 @@ export default {
     },
     totalPages() {
       return this.$store.getters.totalPages;
+    },
+    isFirstPage() {
+      return this.currentPage <= 1;
     },
     isLastPage() {
       return this.currentPage === this.totalPages;

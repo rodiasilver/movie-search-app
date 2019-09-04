@@ -3,7 +3,7 @@
     <table class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
       <thead>
         <tr>
-          <th @click="searchBy('Title')" class="th th-sm">
+          <th @click="sortBy('Title')" class="th th-sm">
             <span>Title</span>
             <img
               class="arrow"
@@ -12,20 +12,20 @@
               alt="arrow"
             />
           </th>
-          <th @click="searchBy('Year')" class="th th-sm">
+          <th @click="sortBy('Year')" class="th th-sm">
             <span>Year</span>
             <img
               class="arrow"
-              :class="columns.Year.order === 'asc' ? 'asc' : 'desc'"
+              :class="columns.Year.order"
               :src="arrow"
               alt="arrow"
             />
           </th>
-          <th @click="searchBy('Type')" class="th th-sm">
+          <th @click="sortBy('Type')" class="th th-sm">
             <span>Type</span>
             <img
               class="arrow"
-              :class="columns.Type.order === 'asc' ? 'asc' : 'desc'"
+              :class="columns.Type.order"
               :src="arrow"
               alt="arrow"
             />
@@ -33,7 +33,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr @click="goToMovie(movie.imdbID)" v-for="(movie, index) in sortedResults" :key="index">
+        <tr v-for="(movie, index) in sortedResults" :key="index" @click="goToMovie(movie.imdbID)">
           <!-- sometimes api returns duplicated imdbID so errors occur.
           that's why i used index as a key-->
           <td>{{movie.Title}}</td>
@@ -47,12 +47,9 @@
 
 <script>
 import arrow from '@/assets/media/images/arrow.png';
-
-const TITLE = 'Title';
-const YEAR = 'Year';
-const TYPE = 'Type';
-const ASC = 'asc';
-const DESC = 'desc';
+import {
+  TITLE, YEAR, TYPE, ASC, DESC,
+} from '@/config/constants';
 
 export default {
   name: 'ResultsTable',
@@ -95,7 +92,7 @@ export default {
         },
       });
     },
-    searchBy(criteria) {
+    sortBy(criteria) {
       switch (criteria) {
         case TITLE:
           this.criteria = TITLE;
