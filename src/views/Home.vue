@@ -3,7 +3,7 @@
     <div class="container">
       <SearchPanel />
       <ResultsTable v-if="results !== undefined && results.length" class="results-table" />
-      <Pagination v-if="totalResults > 10" />
+      <Pagination v-if="totalResults > PAGES_PER_REQUEST" />
     </div>
   </div>
 </template>
@@ -12,6 +12,8 @@
 import SearchPanel from '@/components/SearchPanel.vue';
 import ResultsTable from '@/components/ResultsTable.vue';
 import Pagination from '@/components/Pagination.vue';
+import { PAGES_PER_REQUEST } from '@/config/constants';
+
 
 export default {
   name: 'Home',
@@ -19,6 +21,11 @@ export default {
     SearchPanel,
     ResultsTable,
     Pagination,
+  },
+  data() {
+    return {
+      PAGES_PER_REQUEST,
+    };
   },
   computed: {
     results() {

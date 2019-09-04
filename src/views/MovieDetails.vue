@@ -5,7 +5,7 @@
       <div class="row pt-5">
         <div class="col-lg-4 col-md-6 col-sm-7 col-xs-6">
           <img
-            :src="movieDetails.Poster !== 'N/A' ? movieDetails.Poster : defaultPoster"
+            :src="movieDetails.Poster !== NOT_AVAILABLE ? movieDetails.Poster : defaultPoster"
             alt="Poster"
           />
         </div>
@@ -69,6 +69,7 @@
 import moviesApi from '@/api/movies';
 import defaultPoster from '@/assets/media/images/default_poster.jpg';
 import progress from '@/mixins/progress';
+import NOT_AVAILABLE from '@/config/constants';
 
 export default {
   name: 'MovieDetail',
@@ -78,6 +79,7 @@ export default {
       movieDetails: {},
       defaultPoster,
       isLoading: false,
+      NOT_AVAILABLE,
     };
   },
   watch: {
